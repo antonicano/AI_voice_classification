@@ -16,13 +16,13 @@ print("Preprocesando datos...")
 
 # Separar características (X) y etiquetas (y)
 X = df.drop(columns=["gender", "accent", "origin", "native speaker", "age"])  # Características
-y = {
+y = pd.DataFrame({
     "gender_output": df["gender"],  # Clasificación por género
     "accent_output": df["accent"],  # Clasificación por acento
     "origin_output": df["origin"],  # Clasificación por origen
     "native_output": df["native speaker"],  # Clasificación por nativo/no nativo
     "age_output": df["age"],  # Clasificación por edad
-}
+})
 
 # Normalizar las características
 scaler = StandardScaler()
