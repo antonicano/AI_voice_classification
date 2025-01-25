@@ -9,19 +9,25 @@ import matplotlib.pyplot as plt
 print("Cargando datos...")
 df = pd.read_csv("audio_features.csv")
 
+# Asegurarnos de eliminar las columnas no necesarias
+df = df.drop(columns=["recordingroom", "recordingdate"], errors="ignore")
+
 # Separar características (X) y etiquetas (y)
-X = df.drop(columns=["gender", "native speaker"])  # Eliminar columnas no relevantes
+X = df.drop(columns=["gender", "native speaker"])  # Eliminar columna objetivo y otra irrelevante
 y_native = df["native speaker"]
 
-# Dividir datos en entrenamiento y prueba (80% entrenamiento, 20% prueba)
+# Convertir datos categóricos en numéricos (One-Hot Encoding para X)
+X = pd.get_dummies(X, drop_first=True)
+
+# 2. Dividir datos en entrenamiento y prueba (80% entrenamiento, 20% prueba)
 X_train, X_test, y_train, y_test = train_test_split(X, y_native, test_size=0.2, random_state=42)
 
-# 2. Entrenar el modelo
+# 3. Entrenar el modelo
 print("Entrenando modelo para clasificación de natividad...")
 clf = DecisionTreeClassifier(random_state=42)
 clf.fit(X_train, y_train)
 
-# 3. Evaluar el modelo
+# 4. Evaluar el modelo
 y_pred = clf.predict(X_test)
 
 # Calcular métricas
