@@ -9,9 +9,6 @@ import matplotlib.pyplot as plt
 print("Cargando datos...")
 df = pd.read_csv("audio_features.csv")
 
-# Asegurarnos de eliminar las columnas no necesarias
-df = df.drop(columns=["recordingroom", "recordingdate"], errors="ignore")
-
 # Separar características (X) y etiquetas (y)
 X = df.drop(columns=["gender", "native speaker"])  # Eliminar columna objetivo y otra irrelevante
 y_native = df["native speaker"]
