@@ -6,6 +6,7 @@ import pandas as pd
 # Ruta principal
 DATA_FOLDER = "data"
 META_FILE = os.path.join(DATA_FOLDER, "audioMNIST_meta.txt")
+LOG_FILE = "log.txt"
 
 # Función para cargar el archivo meta
 def load_metadata(meta_file):
@@ -29,8 +30,13 @@ def extract_features(file_path):
         }
         return features
     except Exception as e:
-        print(f"Error processing {file_path}: {e}")
+        log_error(f"Error processing {file_path}: {e}")
         return None
+
+# Función para registrar errores y procesos
+def log_error(message):
+    with open(LOG_FILE, "a") as log:
+        log.write(message + "\n")
 
 # Cargar metadatos
 metadata = load_metadata(META_FILE)
@@ -48,11 +54,11 @@ for folder in sorted(os.listdir(DATA_FOLDER)):
                 file_path = os.path.join(folder_path, file_name)
 
                 # Extraer información del nombre del archivo
-                parts = file_name.split("_")
+                parts = file_name.replace(".wav", "").split("_")
                 if len(parts) == 3:
-                    n = parts[0]  # Número hablado
-                    pp = parts[1]  # Clasificación de la persona
-                    t = parts[2].replace(".wav", "")  # Toma
+                    n = parts[0]  # Número hablado (0-9)
+                    pp = parts[1]  # Clasificación de la persona (01-60)
+                    t = parts[2]  # Toma (0-49)
 
                     # Obtener datos de la persona desde los metadatos
                     person_meta = metadata.get(pp, {})
@@ -67,6 +73,9 @@ for folder in sorted(os.listdir(DATA_FOLDER)):
                             **features,
                             **person_meta
                         })
+                        log_error(f"Processed: {file_name}")
+                    else:
+                        log_error(f"Failed to extract features: {file_name}")
 
 # Crear un DataFrame con los datos procesados
 df = pd.DataFrame(data)
