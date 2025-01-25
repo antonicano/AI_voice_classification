@@ -2,11 +2,28 @@ import os
 import json
 import librosa
 import pandas as pd
+from datetime import datetime
 
 # Ruta principal
 DATA_FOLDER = "data"
 META_FILE = os.path.join(DATA_FOLDER, "audioMNIST_meta.txt")
 LOG_FILE = "log.txt"
+
+# Función para inicializar el archivo log
+def initialize_log():
+    with open(LOG_FILE, "w") as log:
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log.write(f"Log file initialized. Script started at: {start_time}\n")
+        log.write("----------------------------------------\n")
+    return start_time
+
+# Función para finalizar el archivo log
+def finalize_log(start_time):
+    with open(LOG_FILE, "a") as log:
+        end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log.write("----------------------------------------\n")
+        log.write(f"Script started at: {start_time}\n")
+        log.write(f"Script ended at: {end_time}\n")
 
 # Función para cargar el archivo meta
 def load_metadata(meta_file):
@@ -37,6 +54,9 @@ def extract_features(file_path):
 def log_error(message):
     with open(LOG_FILE, "a") as log:
         log.write(message + "\n")
+
+# Inicializar log
+start_time = initialize_log()
 
 # Cargar metadatos
 metadata = load_metadata(META_FILE)
@@ -81,6 +101,9 @@ for folder in sorted(os.listdir(DATA_FOLDER)):
 df = pd.DataFrame(data)
 
 # Guardar los datos en un archivo CSV
-df.to_csv("audio_features.csv", index=False)
+df.to_csv("audio_features_2.csv", index=False)
+
+# Finalizar log
+finalize_log(start_time)
 
 print("Exportación completada. Archivo guardado como audio_features.csv")
